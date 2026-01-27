@@ -26,50 +26,33 @@ def load_model():
 model, scaler, gender_encoder = load_model()
 
 # =====================================================
-# SIDEBAR
+# HEADER
 # =====================================================
-menu = st.sidebar.radio(
-    "Navigasi",
-    ["🏠 Home", "📊 Klasifikasi", "🧠 Model & Evaluasi"]
+st.markdown(
+    """
+    <h2 style="text-align:center;">
+    Klasifikasi Risiko Stunting pada Balita
+    </h2>
+    <p style="text-align:center; color:gray;">
+    Random Forest + SMOTE + Particle Swarm Optimization
+    </p>
+    """,
+    unsafe_allow_html=True
 )
 
-# =====================================================
-# 🏠 HOME
-# =====================================================
-if menu == "🏠 Home":
-
-    st.markdown(
-        """
-        <h2 style='text-align:center'>
-        OPTIMASI HYPERPARAMETER RANDOM FOREST<br>
-        MENGGUNAKAN PARTICLE SWARM OPTIMIZATION DAN SMOTE<br>
-        UNTUK KLASIFIKASI RISIKO STUNTING PADA BALITA
-        </h2>
-        <p style='text-align:center'>
-        <b>Hana Amirah Natasya</b><br>
-        Program Studi Sarjana Teknik Informatika<br>
-        Fakultas Matematika dan Ilmu Pengetahuan Alam<br>
-        Universitas Negeri Semarang
-        </p>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.divider()
-
-    st.subheader("📌 Mengapa Stunting Harus Dideteksi Sejak Dini?")
-    st.write("""
-    Stunting merupakan kondisi gagal tumbuh pada anak balita akibat kekurangan gizi kronis.
-    Deteksi dini penting untuk mencegah dampak jangka panjang pada kesehatan, kognitif,
-    dan kualitas hidup anak.
-    """)
+st.divider()
 
 # =====================================================
-# 📊 KLASIFIKASI
+# NAVIGASI ATAS (TAB)
 # =====================================================
-elif menu == "📊 Klasifikasi":
+tab1, tab2 = st.tabs(["📊 Klasifikasi", "🧠 Model & Informasi"])
 
-    st.header("📊 Klasifikasi Risiko Stunting")
+# =====================================================
+# 📊 TAB 1 — KLASIFIKASI
+# =====================================================
+with tab1:
+
+    st.subheader("📊 Form Klasifikasi Risiko Stunting")
 
     col1, col2 = st.columns(2)
 
@@ -83,16 +66,14 @@ elif menu == "📊 Klasifikasi":
         body_weight = st.number_input("Berat Badan Saat Ini (kg)", 2.0, 25.0, 10.0, step=0.1)
         body_length = st.number_input("Panjang Badan Saat Ini (cm)", 40.0, 120.0, 80.0, step=0.1)
 
-    if st.button("🔍 Klasifikasi"):
+    st.markdown("---")
 
-        # ===============================
-        # 1. ENCODING GENDER
-        # ===============================
+    if st.button("🔍 Lakukan Klasifikasi", use_container_width=True):
+
+        # 1. Encode gender
         gender_encoded = gender_encoder.transform([gender])[0]
 
-        # ===============================
-        # 2. DATA NUMERIK (URUTAN HARUS SAMA DENGAN TRAINING)
-        # ===============================
+        # 2. Numeric input
         numeric_input = pd.DataFrame([[
             age,
             birth_weight,
@@ -107,14 +88,10 @@ elif menu == "📊 Klasifikasi":
             "Body Length"
         ])
 
-        # ===============================
-        # 3. SCALING (PAKAI SCALER TRAINING)
-        # ===============================
+        # 3. Scaling
         numeric_scaled = scaler.transform(numeric_input)
 
-        # ===============================
-        # 4. FINAL INPUT (IDENTIK SAAT TRAINING)
-        # ===============================
+        # 4. Final input
         final_input = pd.DataFrame(
             np.hstack([[gender_encoded], numeric_scaled[0]]).reshape(1, -1),
             columns=[
@@ -127,38 +104,52 @@ elif menu == "📊 Klasifikasi":
             ]
         )
 
-        # ===============================
-        # 5. PREDIKSI
-        # ===============================
+        # 5. Prediction
         prediction = model.predict(final_input)[0]
         proba = model.predict_proba(final_input)[0]
 
-        st.write(f"Probabilitas Tidak Stunting (0): **{proba[0]:.2f}**")
-        st.write(f"Probabilitas Stunting (1): **{proba[1]:.2f}**")
+        st.markdown("### 📈 Probabilitas Kelas")
+        st.write(f"🟢 Tidak Stunting (0): **{proba[0]:.2f}**")
+        st.write(f"🔴 Stunting (1): **{proba[1]:.2f}**")
 
-        # ===============================
-        # 6. INTERPRETASI LABEL (FINAL)
-        # ===============================
+        st.progress(int(proba[1] * 100))
+
+        st.markdown("---")
+
+        # 6. Final decision
         if prediction == 1:
-            st.error("⚠️ BERISIKO STUNTING")
+            st.error("⚠️ **BERISIKO STUNTING**")
         else:
-            st.success("✅ TIDAK BERISIKO STUNTING")
+            st.success("✅ **TIDAK BERISIKO STUNTING**")
 
 # =====================================================
-# 🧠 MODEL & EVALUASI
+# 🧠 TAB 2 — MODEL & INFORMASI
 # =====================================================
-elif menu == "🧠 Model & Evaluasi":
+with tab2:
 
-    st.header("🧠 Evaluasi Model")
+    st.subheader("🧠 Informasi Model")
 
-    st.subheader("Skenario Terbaik: RF + SMOTE + PSO")
     st.write("""
-    Model ini dipilih karena menghasilkan F1-score terbaik
-    serta mampu meningkatkan sensitivitas terhadap kasus stunting.
+    Penelitian ini bertujuan untuk meningkatkan performa klasifikasi risiko stunting
+    pada balita dengan mengombinasikan algoritma **Random Forest**, teknik penyeimbangan data
+    **SMOTE**, serta optimasi hyperparameter menggunakan **Particle Swarm Optimization (PSO)**.
     """)
 
-    cm_pso = Image.open("assets/cm_pso.png")
-    st.image(cm_pso, caption="Confusion Matrix RF + SMOTE + PSO", use_container_width=True)
+    st.markdown("### 🎯 Model Terbaik")
+    st.info("Random Forest + SMOTE + PSO")
 
-    cm_compare = Image.open("assets/cm_compare.png")
-    st.image(cm_compare, caption="Perbandingan Model", use_container_width=True)
+    st.markdown("### 📊 Evaluasi Model")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        cm_pso = Image.open("assets/cm_pso.png")
+        st.image(cm_pso, caption="Confusion Matrix RF + SMOTE + PSO", use_container_width=True)
+
+    with col2:
+        cm_compare = Image.open("assets/cm_compare.png")
+        st.image(cm_compare, caption="Perbandingan Kinerja Model", use_container_width=True)
+
+    st.markdown("---")
+
+    st.caption("© 2026 — Hana Amirah Natasya | Universitas Negeri Semarang")
