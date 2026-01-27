@@ -1,21 +1,21 @@
 import streamlit as st
 import numpy as np
-import joblib
 import pandas as pd
+import joblib
 from PIL import Image
 
-# -------------------------------
+# =====================================================
 # CONFIG
-# -------------------------------
+# =====================================================
 st.set_page_config(
     page_title="Klasifikasi Risiko Stunting",
     page_icon="🧒",
     layout="wide"
 )
 
-# -------------------------------
-# LOAD MODEL & TOOLS
-# -------------------------------
+# =====================================================
+# LOAD MODEL
+# =====================================================
 @st.cache_resource
 def load_model():
     model = joblib.load("model/rf_pso.pkl")
@@ -25,17 +25,17 @@ def load_model():
 
 model, scaler, gender_encoder = load_model()
 
-# -------------------------------
-# SIDEBAR NAVIGATION
-# -------------------------------
+# =====================================================
+# SIDEBAR
+# =====================================================
 menu = st.sidebar.radio(
     "Navigasi",
     ["🏠 Home", "📊 Klasifikasi", "🧠 Model & Evaluasi"]
 )
 
-# ======================================================
+# =====================================================
 # 🏠 HOME
-# ======================================================
+# =====================================================
 if menu == "🏠 Home":
 
     st.markdown(
@@ -59,42 +59,40 @@ if menu == "🏠 Home":
 
     st.subheader("📌 Mengapa Stunting Harus Dideteksi Sejak Dini?")
     st.write("""
-    Stunting merupakan kondisi gagal tumbuh pada anak balita akibat kekurangan gizi kronis,
-    terutama pada 1.000 hari pertama kehidupan. Dampak stunting tidak hanya memengaruhi
-    pertumbuhan fisik, tetapi juga perkembangan kognitif, produktivitas di masa depan,
-    serta meningkatkan risiko penyakit degeneratif.
-
-    Oleh karena itu, diperlukan sistem klasifikasi yang akurat untuk membantu
-    deteksi dini risiko stunting sehingga intervensi dapat dilakukan lebih cepat dan tepat sasaran.
+    Stunting merupakan kondisi gagal tumbuh pada anak balita akibat kekurangan gizi kronis.
+    Deteksi dini penting untuk mencegah dampak jangka panjang pada kesehatan, kognitif,
+    dan kualitas hidup anak.
     """)
 
-    st.info("👉 Gunakan menu **Klasifikasi** untuk melakukan prediksi risiko stunting.")
-
-# ======================================================
+# =====================================================
 # 📊 KLASIFIKASI
-# ======================================================
+# =====================================================
 elif menu == "📊 Klasifikasi":
 
     st.header("📊 Klasifikasi Risiko Stunting")
 
-    # --- input user ---
     col1, col2 = st.columns(2)
+
     with col1:
         gender = st.selectbox("Jenis Kelamin", ["Male", "Female"])
-        age = st.number_input("Usia (bulan)", min_value=0, max_value=60)
-        birth_weight = st.number_input("Berat Lahir (kg)", min_value=0.5, max_value=6.0, step=0.1)
+        age = st.number_input("Usia (bulan)", 0, 60, 24)
+        birth_weight = st.number_input("Berat Lahir (kg)", 0.5, 6.0, 3.0, step=0.1)
 
     with col2:
-        birth_length = st.number_input("Panjang Lahir (cm)", min_value=30.0, max_value=60.0, step=0.1)
-        body_weight = st.number_input("Berat Badan Saat Ini (kg)", min_value=2.0, max_value=25.0, step=0.1)
-        body_length = st.number_input("Panjang Badan Saat Ini (cm)", min_value=40.0, max_value=120.0, step=0.1)
+        birth_length = st.number_input("Panjang Lahir (cm)", 30.0, 60.0, 49.0, step=0.1)
+        body_weight = st.number_input("Berat Badan Saat Ini (kg)", 2.0, 25.0, 10.0, step=0.1)
+        body_length = st.number_input("Panjang Badan Saat Ini (cm)", 40.0, 120.0, 80.0, step=0.1)
 
-    # --- TOMBOL ---
     if st.button("🔍 Klasifikasi"):
 
-        # ====== PREPROCESSING ======
+        # ===============================
+        # 1. ENCODING GENDER
+        # ===============================
         gender_encoded = gender_encoder.transform([gender])[0]
 
+        # ===============================
+        # 2. DATAFRAME NUMERIK (URUTAN SAMA)
+        # ===============================
         input_df = pd.DataFrame([{
             "Age": age,
             "Birth Weight": birth_weight,
@@ -103,8 +101,14 @@ elif menu == "📊 Klasifikasi":
             "Body Length": body_length
         }])
 
+        # ===============================
+        # 3. SCALING
+        # ===============================
         input_scaled = scaler.transform(input_df)
 
+        # ===============================
+        # 4. FINAL INPUT (IDENTIK TRAINING)
+        # ===============================
         final_input = pd.DataFrame(
             np.column_stack([gender_encoded, input_scaled]),
             columns=[
@@ -117,42 +121,49 @@ elif menu == "📊 Klasifikasi":
             ]
         )
 
-        # ====== PREDIKSI ======
-        proba = model.predict_proba(final_input)[0][1]
+        # ===============================
+        # 5. CEK CLASS ORDER (ANTI SALAH)
+        # ===============================
+        classes = model.classes_
 
-        st.write(f"Probabilitas Stunting: {proba:.2f}")
+        if list(classes) == [0, 1]:
+            stunting_index = 1
+        else:
+            stunting_index = 0
 
-        if proba >= 0.5:
+        # ===============================
+        # 6. PROBABILITAS
+        # ===============================
+        proba = model.predict_proba(final_input)[0][stunting_index]
+
+        st.write(f"Probabilitas Stunting: **{proba:.2f}**")
+        st.progress(int(proba * 100))
+
+        # ===============================
+        # 7. KEPUTUSAN (2 KELAS)
+        # ===============================
+        THRESHOLD = 0.70  # lebih realistis utk dataset imbalance
+
+        if proba >= THRESHOLD:
             st.error("⚠️ BERISIKO STUNTING")
         else:
             st.success("✅ TIDAK BERISIKO STUNTING")
 
-
-# ======================================================
+# =====================================================
 # 🧠 MODEL & EVALUASI
-# ======================================================
+# =====================================================
 elif menu == "🧠 Model & Evaluasi":
 
     st.header("🧠 Evaluasi Model")
 
-    st.subheader("📌 Skenario 3: RF + SMOTE + PSO")
+    st.subheader("Skenario Terbaik: RF + SMOTE + PSO")
     st.write("""
-    Model terbaik diperoleh dari kombinasi Random Forest,
-    SMOTE untuk menangani ketidakseimbangan data,
-    serta Particle Swarm Optimization (PSO) untuk optimasi hyperparameter.
+    Model ini dipilih karena menghasilkan F1-score terbaik
+    serta mampu meningkatkan sensitivitas terhadap kasus stunting.
     """)
 
     cm_pso = Image.open("assets/cm_pso.png")
-    st.image(cm_pso, caption="Confusion Matrix — RF + SMOTE + PSO", use_container_width=True)
-
-    st.subheader("📊 Perbandingan Model")
-    st.write("""
-    - **RF Original**: performa dasar tanpa penanganan imbalance
-    - **RF + SMOTE**: recall meningkat signifikan
-    - **RF + SMOTE + PSO**: F1-score terbaik dan model paling stabil
-    """)
+    st.image(cm_pso, caption="Confusion Matrix RF + SMOTE + PSO", use_container_width=True)
 
     cm_compare = Image.open("assets/cm_compare.png")
-    st.image(cm_compare, caption="Perbandingan Confusion Matrix", use_container_width=True)
-
-    st.success("✅ Model RF + SMOTE + PSO dipilih sebagai model terbaik.")
+    st.image(cm_compare, caption="Perbandingan Model", use_container_width=True)
