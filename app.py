@@ -91,24 +91,43 @@ elif menu == "📊 Klasifikasi":
 
     if st.button("🔍 Klasifikasi"):
 
-    gender_encoded = gender_encoder.transform([gender])[0]
+        # 1. Encode gender
+        gender_encoded = gender_encoder.transform([gender])[0]
 
-    input_df = pd.DataFrame([{
-        "Age": age,
-        "Birth Weight": birth_weight,
-        "Birth Length": birth_length,
-        "Body Weight": body_weight,
-        "Body Length": body_length
-    }])
+        # 2. Data numerik (URUTAN HARUS SAMA)
+        input_df = pd.DataFrame([{
+            "Age": age,
+            "Birth Weight": birth_weight,
+            "Birth Length": birth_length,
+            "Body Weight": body_weight,
+            "Body Length": body_length
+        }])
 
-    input_scaled = scaler.transform(input_df)
+        # 3. Scaling
+        input_scaled = scaler.transform(input_df)
 
-    final_input = pd.DataFrame(
-        np.column_stack([gender_encoded, input_scaled]),
-        columns=['Gender', 'Age', 'Birth Weight', 'Birth Length', 'Body Weight', 'Body Length']
-    )
+        # 4. Gabungkan gender + numerik
+        final_input = pd.DataFrame(
+            np.column_stack([gender_encoded, input_scaled]),
+            columns=[
+                'Gender',
+                'Age',
+                'Birth Weight',
+                'Birth Length',
+                'Body Weight',
+                'Body Length'
+            ]
+        )
 
-    prediction = model.predict(final_input)[0]
+        # 5. Prediksi
+        prediction = model.predict(final_input)[0]
+
+        # 6. Output hasil
+        if prediction == 1:
+            st.error("⚠️ HASIL: **BERISIKO STUNTING**")
+        else:
+            st.success("✅ HASIL: **TIDAK BERISIKO STUNTING**")
+
 
 
 # ======================================================
