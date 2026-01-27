@@ -45,14 +45,14 @@ st.divider()
 # =====================================================
 # NAVIGASI ATAS (BUKAN SIDEBAR)
 # =====================================================
-tab1, tab2 = st.tabs(["📊 Klasifikasi", "🧠 Model & Informasi"])
+tab1, tab2 = st.tabs(["🔍 Klasifikasi", "📖 Model & Informasi"])
 
 # =====================================================
 # 📊 TAB 1 — KLASIFIKASI
 # =====================================================
 with tab1:
 
-    st.subheader("📊 Form Klasifikasi Risiko Stunting")
+    st.subheader("Input Data")
 
     col1, col2 = st.columns(2)
 
