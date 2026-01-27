@@ -90,21 +90,26 @@ elif menu == "📊 Klasifikasi":
         body_length = st.number_input("Panjang Badan Saat Ini (cm)", min_value=40.0, max_value=120.0, step=0.1)
 
     if st.button("🔍 Klasifikasi"):
-        # Encoding gender
-        gender_encoded = gender_encoder.transform([gender])[0]
 
-        # Gabungkan input
-        input_data = np.array([[age, birth_weight, birth_length, body_weight, body_length]])
-        input_scaled = scaler.transform(input_data)
+    gender_encoded = gender_encoder.transform([gender])[0]
 
-        final_input = np.insert(input_scaled, 0, gender_encoded, axis=1)
+    input_df = pd.DataFrame([{
+        "Age": age,
+        "Birth Weight": birth_weight,
+        "Birth Length": birth_length,
+        "Body Weight": body_weight,
+        "Body Length": body_length
+    }])
 
-        prediction = model.predict(final_input)[0]
+    input_scaled = scaler.transform(input_df)
 
-        if prediction == 1:
-            st.error("⚠️ **HASIL: BERISIKO STUNTING**")
-        else:
-            st.success("✅ **HASIL: TIDAK BERISIKO STUNTING**")
+    final_input = pd.DataFrame(
+        np.column_stack([gender_encoded, input_scaled]),
+        columns=['Gender', 'Age', 'Birth Weight', 'Birth Length', 'Body Weight', 'Body Length']
+    )
+
+    prediction = model.predict(final_input)[0]
+
 
 # ======================================================
 # 🧠 MODEL & EVALUASI
