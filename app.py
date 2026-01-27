@@ -34,7 +34,7 @@ st.markdown(
     Klasifikasi Risiko Stunting pada Balita
     </h2>
     <p style="text-align:center; color:gray;">
-    Random Forest + SMOTE + Particle Swarm Optimization
+    Klasifikasi Ini Menggunakan Kombinasi Model Random Forest, SMOTE, dan Particle Swarm Optimization
     </p>
     """,
     unsafe_allow_html=True
