@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # =====================================================
-# LOAD MODEL
+# LOAD MODEL (NAMA FILE TIDAK DIUBAH)
 # =====================================================
 @st.cache_resource
 def load_model():
@@ -26,7 +26,7 @@ def load_model():
 model, scaler, gender_encoder = load_model()
 
 # =====================================================
-# HEADER
+# HEADER UTAMA
 # =====================================================
 st.markdown(
     """
@@ -43,7 +43,7 @@ st.markdown(
 st.divider()
 
 # =====================================================
-# NAVIGASI ATAS (TAB)
+# NAVIGASI ATAS (BUKAN SIDEBAR)
 # =====================================================
 tab1, tab2 = st.tabs(["📊 Klasifikasi", "🧠 Model & Informasi"])
 
@@ -70,10 +70,10 @@ with tab1:
 
     if st.button("🔍 Lakukan Klasifikasi", use_container_width=True):
 
-        # 1. Encode gender
+        # 1. Encoding gender (SAMA seperti training)
         gender_encoded = gender_encoder.transform([gender])[0]
 
-        # 2. Numeric input
+        # 2. Input numerik (URUTAN HARUS IDENTIK)
         numeric_input = pd.DataFrame([[
             age,
             birth_weight,
@@ -88,7 +88,7 @@ with tab1:
             "Body Length"
         ])
 
-        # 3. Scaling
+        # 3. Scaling (PAKAI scaler training)
         numeric_scaled = scaler.transform(numeric_input)
 
         # 4. Final input
@@ -104,7 +104,7 @@ with tab1:
             ]
         )
 
-        # 5. Prediction
+        # 5. Prediksi
         prediction = model.predict(final_input)[0]
         proba = model.predict_proba(final_input)[0]
 
@@ -116,7 +116,7 @@ with tab1:
 
         st.markdown("---")
 
-        # 6. Final decision
+        # 6. Interpretasi final (0 = tidak, 1 = stunting)
         if prediction == 1:
             st.error("⚠️ **BERISIKO STUNTING**")
         else:
@@ -130,9 +130,9 @@ with tab2:
     st.subheader("🧠 Informasi Model")
 
     st.write("""
-    Penelitian ini bertujuan untuk meningkatkan performa klasifikasi risiko stunting
-    pada balita dengan mengombinasikan algoritma **Random Forest**, teknik penyeimbangan data
-    **SMOTE**, serta optimasi hyperparameter menggunakan **Particle Swarm Optimization (PSO)**.
+    Aplikasi ini menggunakan algoritma **Random Forest** yang dioptimasi
+    menggunakan **Particle Swarm Optimization (PSO)** serta penyeimbangan data
+    dengan **SMOTE** untuk meningkatkan sensitivitas terhadap kasus stunting.
     """)
 
     st.markdown("### 🎯 Model Terbaik")
@@ -151,5 +151,4 @@ with tab2:
         st.image(cm_compare, caption="Perbandingan Kinerja Model", use_container_width=True)
 
     st.markdown("---")
-
     st.caption("© 2026 — Hana Amirah Natasya | Universitas Negeri Semarang")
