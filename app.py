@@ -77,8 +77,8 @@ elif menu == "📊 Klasifikasi":
 
     st.header("📊 Klasifikasi Risiko Stunting")
 
+    # --- input user ---
     col1, col2 = st.columns(2)
-
     with col1:
         gender = st.selectbox("Jenis Kelamin", ["Male", "Female"])
         age = st.number_input("Usia (bulan)", min_value=0, max_value=60)
@@ -89,12 +89,12 @@ elif menu == "📊 Klasifikasi":
         body_weight = st.number_input("Berat Badan Saat Ini (kg)", min_value=2.0, max_value=25.0, step=0.1)
         body_length = st.number_input("Panjang Badan Saat Ini (cm)", min_value=40.0, max_value=120.0, step=0.1)
 
+    # --- TOMBOL ---
     if st.button("🔍 Klasifikasi"):
 
-        # 1. Encode gender
+        # ====== PREPROCESSING ======
         gender_encoded = gender_encoder.transform([gender])[0]
 
-        # 2. Data numerik (URUTAN HARUS SAMA)
         input_df = pd.DataFrame([{
             "Age": age,
             "Birth Weight": birth_weight,
@@ -103,31 +103,29 @@ elif menu == "📊 Klasifikasi":
             "Body Length": body_length
         }])
 
-        # 3. Scaling
         input_scaled = scaler.transform(input_df)
 
-        # 4. Gabungkan gender + numerik
         final_input = pd.DataFrame(
             np.column_stack([gender_encoded, input_scaled]),
             columns=[
-                'Gender',
-                'Age',
-                'Birth Weight',
-                'Birth Length',
-                'Body Weight',
-                'Body Length'
+                "Gender",
+                "Age",
+                "Birth Weight",
+                "Birth Length",
+                "Body Weight",
+                "Body Length"
             ]
         )
 
-        # 5. Prediksi
-        prediction = model.predict(final_input)[0]
+        # ====== PREDIKSI ======
+        proba = model.predict_proba(final_input)[0][1]
 
-        # 6. Output hasil
-        if prediction == 1:
-            st.error("⚠️ HASIL: **BERISIKO STUNTING**")
+        st.write(f"Probabilitas Stunting: {proba:.2f}")
+
+        if proba >= 0.5:
+            st.error("⚠️ BERISIKO STUNTING")
         else:
-            st.success("✅ HASIL: **TIDAK BERISIKO STUNTING**")
-
+            st.success("✅ TIDAK BERISIKO STUNTING")
 
 
 # ======================================================
