@@ -43,7 +43,7 @@ st.markdown(
 st.divider()
 
 # =====================================================
-# NAVIGASI ATAS (BUKAN SIDEBAR)
+# NAVIGASI ATAS
 # =====================================================
 tab1, tab2 = st.tabs(["🔍 Klasifikasi", "📖 Model & Informasi"])
 
@@ -104,7 +104,13 @@ with tab1:
             ]
         )
 
-        # 5. Prediksi
+        # 5. Interpretasi final (0 = tidak, 1 = stunting)
+        if prediction == 1:
+            st.error("⚠️ **BERISIKO STUNTING**")
+        else:
+            st.success("✅ **TIDAK BERISIKO STUNTING**")
+
+        # 6. Prediksi
         prediction = model.predict(final_input)[0]
         proba = model.predict_proba(final_input)[0]
 
@@ -115,12 +121,6 @@ with tab1:
         st.progress(int(proba[1] * 100))
 
         st.markdown("---")
-
-        # 6. Interpretasi final (0 = tidak, 1 = stunting)
-        if prediction == 1:
-            st.error("⚠️ **BERISIKO STUNTING**")
-        else:
-            st.success("✅ **TIDAK BERISIKO STUNTING**")
 
 # =====================================================
 # 🧠 TAB 2 — MODEL & INFORMASI
