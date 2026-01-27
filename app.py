@@ -86,31 +86,38 @@ elif menu == "📊 Klasifikasi":
     if st.button("🔍 Klasifikasi"):
 
         # ===============================
-        # 1. ENCODING GENDER
+        # 1. ENCODING
         # ===============================
         gender_encoded = gender_encoder.transform([gender])[0]
 
         # ===============================
-        # 2. DATAFRAME NUMERIK (URUTAN SAMA)
+        # 2. DATAFRAME NUMERIK (TANPA GENDER)
+        #    URUTAN HARUS SAMA DENGAN TRAINING
         # ===============================
-        input_df = pd.DataFrame([{
-            "Age": age,
-            "Birth Weight": birth_weight,
-            "Birth Length": birth_length,
-            "Body Weight": body_weight,
-            "Body Length": body_length
-        }])
+        numeric_input = pd.DataFrame([[
+            age,
+            birth_weight,
+            birth_length,
+            body_weight,
+            body_length
+        ]], columns=[
+            "Age",
+            "Birth Weight",
+            "Birth Length",
+            "Body Weight",
+            "Body Length"
+        ])
 
         # ===============================
-        # 3. SCALING
+        # 3. SCALING (PAKAI SCALER TRAINING)
         # ===============================
-        input_scaled = scaler.transform(input_df)
+        numeric_scaled = scaler.transform(numeric_input)
 
         # ===============================
-        # 4. FINAL INPUT (IDENTIK TRAINING)
+        # 4. FINAL INPUT (PASTI IDENTIK TRAINING)
         # ===============================
         final_input = pd.DataFrame(
-            np.column_stack([gender_encoded, input_scaled]),
+            np.hstack([[gender_encoded], numeric_scaled[0]]).reshape(1, -1),
             columns=[
                 "Gender",
                 "Age",
@@ -122,32 +129,24 @@ elif menu == "📊 Klasifikasi":
         )
 
         # ===============================
-        # 5. CEK CLASS ORDER (ANTI SALAH)
+        # 5. PREDIKSI LANGSUNG (BINARY)
         # ===============================
-        classes = model.classes_
+        prediction = model.predict(final_input)[0]
+        proba = model.predict_proba(final_input)
 
-        if list(classes) == [0, 1]:
-            stunting_index = 1
-        else:
-            stunting_index = 0
+        st.write("Probabilitas Model:", proba)
 
         # ===============================
-        # 6. PROBABILITAS
+        # 6. INTERPRETASI LABEL (ANTI TERBALIK)
         # ===============================
-        proba = model.predict_proba(final_input)[0][stunting_index]
-
-        st.write(f"Probabilitas Stunting: **{proba:.2f}**")
-        st.progress(int(proba * 100))
-
-        # ===============================
-        # 7. KEPUTUSAN (2 KELAS)
-        # ===============================
-        THRESHOLD = 0.70  # lebih realistis utk dataset imbalance
-
-        if proba >= THRESHOLD:
+        # Berdasarkan dataset:
+        # 0 = STUNTING
+        # 1 = TIDAK STUNTING
+        if prediction == 0:
             st.error("⚠️ BERISIKO STUNTING")
         else:
             st.success("✅ TIDAK BERISIKO STUNTING")
+
 
 # =====================================================
 # 🧠 MODEL & EVALUASI
