@@ -86,13 +86,12 @@ elif menu == "📊 Klasifikasi":
     if st.button("🔍 Klasifikasi"):
 
         # ===============================
-        # 1. ENCODING
+        # 1. ENCODING GENDER
         # ===============================
         gender_encoded = gender_encoder.transform([gender])[0]
 
         # ===============================
-        # 2. DATAFRAME NUMERIK (TANPA GENDER)
-        #    URUTAN HARUS SAMA DENGAN TRAINING
+        # 2. DATA NUMERIK (URUTAN HARUS SAMA DENGAN TRAINING)
         # ===============================
         numeric_input = pd.DataFrame([[
             age,
@@ -114,7 +113,7 @@ elif menu == "📊 Klasifikasi":
         numeric_scaled = scaler.transform(numeric_input)
 
         # ===============================
-        # 4. FINAL INPUT (PASTI IDENTIK TRAINING)
+        # 4. FINAL INPUT (IDENTIK SAAT TRAINING)
         # ===============================
         final_input = pd.DataFrame(
             np.hstack([[gender_encoded], numeric_scaled[0]]).reshape(1, -1),
@@ -129,24 +128,21 @@ elif menu == "📊 Klasifikasi":
         )
 
         # ===============================
-        # 5. PREDIKSI LANGSUNG (BINARY)
+        # 5. PREDIKSI
         # ===============================
         prediction = model.predict(final_input)[0]
-        proba = model.predict_proba(final_input)
+        proba = model.predict_proba(final_input)[0]
 
-        st.write("Probabilitas Model:", proba)
+        st.write(f"Probabilitas Tidak Stunting (0): **{proba[0]:.2f}**")
+        st.write(f"Probabilitas Stunting (1): **{proba[1]:.2f}**")
 
         # ===============================
-        # 6. INTERPRETASI LABEL (ANTI TERBALIK)
+        # 6. INTERPRETASI LABEL (FINAL)
         # ===============================
-        # Berdasarkan dataset:
-        # 0 = STUNTING
-        # 1 = TIDAK STUNTING
-        if prediction == 0:
+        if prediction == 1:
             st.error("⚠️ BERISIKO STUNTING")
         else:
             st.success("✅ TIDAK BERISIKO STUNTING")
-
 
 # =====================================================
 # 🧠 MODEL & EVALUASI
