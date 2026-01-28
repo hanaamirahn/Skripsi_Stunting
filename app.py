@@ -132,6 +132,9 @@ with tab1:
 # =====================================================
 # 🧠 TAB 2 — MODEL & INFORMASI
 # =====================================================
+# =====================================================
+# 🧠 TAB 2 — MODEL & INFORMASI
+# =====================================================
 import os
 
 with tab2:
@@ -169,7 +172,7 @@ with tab2:
 
     if os.path.exists(cm_pso_path):
         cm_pso = Image.open(cm_pso_path)
-    
+
         col_left, col_center, col_right = st.columns([1, 2, 1])
         with col_center:
             st.image(
@@ -180,22 +183,20 @@ with tab2:
     else:
         st.warning("📂 File gambar confusion matrix belum tersedia.")
 
-
     st.markdown("""
-    Berdasarkan hasil *confusion matrix* pada Gambar 4.16,
-    pada **kelas 0 (tidak stunting)** terdapat **220 data** yang berhasil
-    diprediksi dengan benar sebagai kelas 0.
-    Namun, masih terdapat **189 data kelas 0** yang keliru diprediksi
-    sebagai kelas 1. Hal ini menunjukkan bahwa meskipun kemampuan model
-    dalam mengenali kelas 0 sudah cukup baik, masih terdapat sebagian data
-    yang sulit dibedakan dari kelas 1.
+    Berdasarkan hasil *confusion matrix*, pada **kelas 0 (tidak stunting)**
+    terdapat **220 data** yang berhasil diprediksi dengan benar sebagai kelas 0.
+    Namun, masih terdapat **189 data kelas 0** yang keliru diprediksi sebagai
+    kelas 1. Hal ini menunjukkan bahwa meskipun kemampuan model dalam mengenali
+    kelas 0 sudah cukup baik, masih terdapat sebagian data yang sulit dibedakan
+    dari kelas 1.
 
-    Sementara itu, pada **kelas 1 (stunting)**, model menunjukkan kinerja
-    yang lebih kuat. Sebanyak **1474 data** berhasil diprediksi dengan benar
-    sebagai kelas 1, sedangkan **117 data kelas 1** masih salah diprediksi
-    sebagai kelas 0. Jumlah kesalahan pada kelas ini relatif lebih kecil
-    dibandingkan jumlah prediksi benarnya, yang menandakan bahwa model
-    cukup konsisten dalam mengenali pola kelas 1.
+    Sementara itu, pada **kelas 1 (stunting)**, model menunjukkan kinerja yang
+    lebih kuat. Sebanyak **1474 data** berhasil diprediksi dengan benar sebagai
+    kelas 1, sedangkan **117 data kelas 1** masih salah diprediksi sebagai kelas 0.
+    Jumlah kesalahan pada kelas ini relatif lebih kecil dibandingkan jumlah
+    prediksi benarnya, yang menandakan bahwa model cukup konsisten dalam mengenali
+    pola kelas 1.
     """)
 
     st.markdown("---")
@@ -205,11 +206,11 @@ with tab2:
     # =====================================================
     st.markdown("### Classification Report")
 
-   cr_path = "assets/cr_img.png"
+    cr_path = "assets/cr_img.png"
 
     if os.path.exists(cr_path):
         cr_img = Image.open(cr_path)
-    
+
         col_left, col_center, col_right = st.columns([1, 2, 1])
         with col_center:
             st.image(
@@ -221,24 +222,23 @@ with tab2:
         st.warning("📂 File gambar classification report belum tersedia.")
 
     st.markdown("""
-    Gambar 4.17 menampilkan *classification report* yang merangkum kinerja
+    Gambar di atas menampilkan *classification report* yang merangkum kinerja
     model dalam mengklasifikasikan dua kelas, yaitu kelas 0 dan kelas 1,
     dengan **akurasi sebesar 0.85 atau 85%**.
 
-    Pada **kelas 0**, model memiliki nilai **precision sebesar 0.65**,
-    yang menunjukkan bahwa sebagian besar prediksi kelas 0 cukup tepat,
-    meskipun masih terdapat prediksi yang keliru.
-    Nilai **recall sebesar 0.54** mengindikasikan bahwa model belum sepenuhnya
-    optimal dalam menangkap seluruh data kelas 0 yang sebenarnya.
-    Hal ini tercermin pada **F1-score sebesar 0.59**, yang menggambarkan
-    keseimbangan antara precision dan recall pada kelas ini.
+    Pada **kelas 0**, model memiliki nilai **precision sebesar 0.65**, yang
+    menunjukkan bahwa sebagian besar prediksi kelas 0 cukup tepat meskipun masih
+    terdapat prediksi yang keliru. Nilai **recall sebesar 0.54** mengindikasikan
+    bahwa model belum sepenuhnya optimal dalam menangkap seluruh data kelas 0
+    yang sebenarnya. Hal ini tercermin pada **F1-score sebesar 0.59**, yang
+    menggambarkan keseimbangan antara precision dan recall pada kelas ini.
 
     Sebaliknya, pada **kelas 1**, performa model terlihat lebih kuat.
     Nilai **precision sebesar 0.89** menunjukkan tingkat ketepatan prediksi
-    yang tinggi, sedangkan **recall sebesar 0.93** menandakan bahwa hampir
-    seluruh data kelas 1 berhasil dikenali dengan baik oleh model.
-    Kombinasi keduanya menghasilkan **F1-score sebesar 0.91**,
-    yang mencerminkan konsistensi model dalam mengklasifikasikan kelas 1.
+    yang tinggi, sedangkan **recall sebesar 0.93** menandakan bahwa hampir seluruh
+    data kelas 1 berhasil dikenali dengan baik oleh model. Kombinasi keduanya
+    menghasilkan **F1-score sebesar 0.91**, yang mencerminkan konsistensi model
+    dalam mengklasifikasikan kelas 1.
     """)
 
     st.markdown("""
