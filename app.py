@@ -201,7 +201,7 @@ with tab2:
     # =====================================================
     st.markdown("### Classification Report")
 
-    cr_path = "assets/classification_report.png"
+    cr_path = "assets/cr_img.png"
 
     if os.path.exists(cr_path):
         cr_img = Image.open(cr_path)
