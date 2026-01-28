@@ -142,81 +142,74 @@ with tab2:
     st.markdown("""
     ### Cara Kerja Model Klasifikasi
 
-    Proses klasifikasi risiko stunting pada balita dimulai dari tahap
-    **pra-pemrosesan data**, meliputi pembersihan data, encoding variabel
-    kategorik (jenis kelamin), serta normalisasi fitur numerik menggunakan
-    *scaler*.
+    Proses klasifikasi risiko stunting pada balita dalam penelitian ini
+    dimulai dari tahap **pra-pemrosesan data**, yaitu pembersihan data,
+    encoding variabel kategorik (jenis kelamin), serta normalisasi fitur
+    numerik menggunakan *scaler*.
 
-    Dataset yang mengalami ketidakseimbangan kelas kemudian ditangani
-    menggunakan metode **Synthetic Minority Over-sampling Technique (SMOTE)**,
-    sehingga distribusi data antar kelas menjadi lebih seimbang.
+    Selanjutnya, dataset yang memiliki ketidakseimbangan kelas
+    ditangani menggunakan metode **Synthetic Minority Over-sampling Technique (SMOTE)**,
+    sehingga jumlah data pada kelas minoritas dan mayoritas menjadi seimbang.
 
-    Model utama yang digunakan adalah **Random Forest**. Untuk meningkatkan
-    performa model, khususnya pada nilai F1-score, dilakukan optimasi
-    hyperparameter menggunakan **Particle Swarm Optimization (PSO)**.
-    Model hasil optimasi ini digunakan sebagai model terbaik dalam sistem.
+    Model klasifikasi utama yang digunakan adalah **Random Forest**.
+    Untuk meningkatkan performa model, terutama pada nilai F1-score,
+    dilakukan optimasi hyperparameter menggunakan
+    **Particle Swarm Optimization (PSO)**.
+    Model hasil optimasi inilah yang kemudian digunakan sebagai model terbaik
+    dalam sistem klasifikasi ini.
     """)
 
     st.markdown("---")
 
     # =====================================================
-    # VISUAL EVALUATION (SIDE BY SIDE)
-    # =====================================================
-    col_cm, col_cr = st.columns(2)
-
-    # ==========================
     # CONFUSION MATRIX
-    # ==========================
-    with col_cm:
-        st.markdown("### Confusion Matrix")
+    # =====================================================
+    st.markdown("### Confusion Matrix")
 
-        cm_pso_path = "assets/cm_pso.png"
+    cm_pso_path = "assets/cm_pso.png"
 
+    col_img, col_text = st.columns([1, 1.3])
+
+    with col_img:
         if os.path.exists(cm_pso_path):
-            cm_img = Image.open(cm_pso_path)
+            cm_pso = Image.open(cm_pso_path)
             st.image(
-                cm_img,
+                cm_pso,
                 caption="Confusion Matrix Model RF + SMOTE + PSO",
                 use_container_width=True
             )
         else:
             st.warning("📂 Gambar confusion matrix belum tersedia.")
 
+    with col_text:
         st.markdown("""
-        Pada **kelas 0 (tidak stunting)**, terdapat **220 data** yang berhasil
-        diprediksi dengan benar sebagai kelas 0, sedangkan **189 data**
-        masih keliru diprediksi sebagai kelas 1. Hal ini menunjukkan bahwa
-        kemampuan model dalam membedakan kelas 0 masih perlu ditingkatkan.
+        Berdasarkan hasil *confusion matrix*, pada **kelas 0 (tidak stunting)**
+        terdapat **220 data** yang berhasil diprediksi dengan benar sebagai kelas 0.
+        Namun, masih terdapat **189 data kelas 0** yang keliru diprediksi sebagai
+        kelas 1. Hal ini menunjukkan bahwa meskipun kemampuan model dalam mengenali
+        kelas 0 sudah cukup baik, masih terdapat sebagian data yang sulit dibedakan
+        dari kelas 1.
 
-        Sementara itu, pada **kelas 1 (stunting)**, model menunjukkan kinerja
-        yang lebih baik dengan **1474 data** berhasil diprediksi dengan benar
-        dan hanya **117 data** yang salah diklasifikasikan. Hal ini menandakan
-        bahwa model cukup konsisten dalam mengenali pola pada kelas stunting.
+        Sementara itu, pada **kelas 1 (stunting)**, model menunjukkan kinerja yang
+        lebih kuat. Sebanyak **1474 data** berhasil diprediksi dengan benar sebagai
+        kelas 1, sedangkan **117 data kelas 1** masih salah diprediksi sebagai kelas 0.
+        Jumlah kesalahan pada kelas ini relatif lebih kecil dibandingkan jumlah
+        prediksi benarnya, yang menandakan bahwa model cukup konsisten dalam mengenali
+        pola kelas 1.
         """)
 
-    # ==========================
-    # GARIS PEMBATAS TENGAH
-    # ==========================
-    with col_div:
-        st.markdown(
-            """
-            <div style="
-                height: 100%;
-                border-left: 2px solid #e0e0e0;
-                margin: auto;
-            "></div>
-            """,
-            unsafe_allow_html=True
-        )
+    st.markdown("---")
 
-    # ==========================
+    # =====================================================
     # CLASSIFICATION REPORT
-    # ==========================
-    with col_cr:
-        st.markdown("### Classification Report")
+    # =====================================================
+    st.markdown("### Classification Report")
 
-        cr_path = "assets/cr_img.png"
+    cr_path = "assets/cr_img.png"
 
+    col_img, col_text = st.columns([1, 1.3])
+
+    with col_img:
         if os.path.exists(cr_path):
             cr_img = Image.open(cr_path)
             st.image(
@@ -227,17 +220,26 @@ with tab2:
         else:
             st.warning("📂 Gambar classification report belum tersedia.")
 
+    with col_text:
         st.markdown("""
-        *Classification report* menunjukkan bahwa model mencapai
-        **akurasi sebesar 0.85 (85%)** dalam mengklasifikasikan dua kelas.
+        *Classification report* menunjukkan kinerja model dalam
+        mengklasifikasikan dua kelas, yaitu kelas 0 dan kelas 1,
+        dengan **akurasi sebesar 0.85 atau 85%**.
 
-        Pada **kelas 0**, model memiliki **precision 0.65**, **recall 0.54**,
-        dan **F1-score 0.59**, yang menunjukkan bahwa performa model pada kelas
-        ini masih belum optimal.
+        Pada **kelas 0**, model memiliki nilai **precision sebesar 0.65**,
+        yang menunjukkan bahwa sebagian besar prediksi kelas 0 cukup tepat,
+        meskipun masih terdapat prediksi yang keliru.
+        Nilai **recall sebesar 0.54** mengindikasikan bahwa model belum sepenuhnya
+        optimal dalam menangkap seluruh data kelas 0 yang sebenarnya.
+        Hal ini tercermin pada **F1-score sebesar 0.59**, yang menggambarkan
+        keseimbangan antara precision dan recall pada kelas ini.
 
-        Sebaliknya, pada **kelas 1**, model menunjukkan performa yang lebih
-        kuat dengan **precision 0.89**, **recall 0.93**, dan **F1-score 0.91**,
-        yang mencerminkan konsistensi model dalam mengenali data stunting.
+        Sebaliknya, pada **kelas 1**, performa model terlihat lebih kuat.
+        Nilai **precision sebesar 0.89** menunjukkan tingkat ketepatan prediksi
+        yang tinggi, sedangkan **recall sebesar 0.93** menandakan bahwa hampir seluruh
+        data kelas 1 berhasil dikenali dengan baik oleh model.
+        Kombinasi keduanya menghasilkan **F1-score sebesar 0.91**, yang mencerminkan
+        konsistensi model dalam mengklasifikasikan kelas 1.
         """)
 
     st.markdown("""
