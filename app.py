@@ -163,7 +163,7 @@ with tab2:
     # =====================================================
     # CONFUSION MATRIX
     # =====================================================
-    st.markdown("### 📊 Confusion Matrix (Skenario 3: RF + SMOTE + PSO)")
+    st.markdown("### Confusion Matrix")
 
     cm_pso_path = "assets/cm_pso.png"
 
@@ -178,7 +178,7 @@ with tab2:
         st.warning("📂 File gambar confusion matrix belum tersedia.")
 
     st.markdown("""
-    Berdasarkan hasil *confusion matrix* pada Gambar 4.16,
+    Berdasarkan hasil *confusion matrix* pada,
     pada **kelas 0 (tidak stunting)** terdapat **220 data** yang berhasil
     diprediksi dengan benar sebagai kelas 0.
     Namun, masih terdapat **189 data kelas 0** yang keliru diprediksi
@@ -199,7 +199,7 @@ with tab2:
     # =====================================================
     # CLASSIFICATION REPORT
     # =====================================================
-    st.markdown("### 📈 Classification Report")
+    st.markdown("### Classification Report")
 
     cr_path = "assets/classification_report.png"
 
@@ -214,7 +214,7 @@ with tab2:
         st.warning("📂 File gambar classification report belum tersedia.")
 
     st.markdown("""
-    Gambar 4.17 menampilkan *classification report* yang merangkum kinerja
+    berikut merupakan hasil kinerja dari
     model dalam mengklasifikasikan dua kelas, yaitu kelas 0 dan kelas 1,
     dengan **akurasi sebesar 0.85 atau 85%**.
 
