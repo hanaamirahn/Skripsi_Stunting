@@ -169,13 +169,17 @@ with tab2:
 
     if os.path.exists(cm_pso_path):
         cm_pso = Image.open(cm_pso_path)
-        st.image(
-            cm_pso,
-            caption="Confusion Matrix Model RF + SMOTE + PSO",
-            width=420   # <<< DIKECILKAN
-        )
+    
+        col_left, col_center, col_right = st.columns([1, 2, 1])
+        with col_center:
+            st.image(
+                cm_pso,
+                caption="Confusion Matrix Model RF + SMOTE + PSO",
+                width=420
+            )
     else:
         st.warning("📂 File gambar confusion matrix belum tersedia.")
+
 
     st.markdown("""
     Berdasarkan hasil *confusion matrix* pada Gambar 4.16,
@@ -201,15 +205,18 @@ with tab2:
     # =====================================================
     st.markdown("### Classification Report")
 
-    cr_path = "assets/cr_img.png"
+   cr_path = "assets/cr_img.png"
 
     if os.path.exists(cr_path):
         cr_img = Image.open(cr_path)
-        st.image(
-            cr_img,
-            caption="Classification Report Model RF + SMOTE + PSO",
-            width=420   # <<< DIKECILKAN
-        )
+    
+        col_left, col_center, col_right = st.columns([1, 2, 1])
+        with col_center:
+            st.image(
+                cr_img,
+                caption="Classification Report Model RF + SMOTE + PSO",
+                width=420
+            )
     else:
         st.warning("📂 File gambar classification report belum tersedia.")
 
