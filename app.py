@@ -195,6 +195,21 @@ with tab2:
         """)
 
     # ==========================
+    # GARIS PEMBATAS TENGAH
+    # ==========================
+    with col_div:
+        st.markdown(
+            """
+            <div style="
+                height: 100%;
+                border-left: 2px solid #e0e0e0;
+                margin: auto;
+            "></div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    # ==========================
     # CLASSIFICATION REPORT
     # ==========================
     with col_cr:
