@@ -132,30 +132,114 @@ with tab1:
 # =====================================================
 # 🧠 TAB 2 — MODEL & INFORMASI
 # =====================================================
+import os
+
 with tab2:
 
     st.subheader("🧠 Informasi Model")
 
-    st.write("""
-    Aplikasi ini menggunakan algoritma **Random Forest** yang dioptimasi
-    menggunakan **Particle Swarm Optimization (PSO)** serta penyeimbangan data
-    dengan **SMOTE** untuk meningkatkan sensitivitas terhadap kasus stunting.
+    st.markdown("""
+    ### Cara Kerja Model Klasifikasi
+
+    Proses klasifikasi risiko stunting pada balita dalam penelitian ini
+    dimulai dari tahap **pra-pemrosesan data**, yaitu pembersihan data,
+    encoding variabel kategorik (jenis kelamin), serta normalisasi fitur
+    numerik menggunakan *scaler*.
+
+    Selanjutnya, dataset yang memiliki ketidakseimbangan kelas
+    ditangani menggunakan metode **Synthetic Minority Over-sampling Technique (SMOTE)**,
+    sehingga jumlah data pada kelas minoritas dan mayoritas menjadi seimbang.
+
+    Model klasifikasi utama yang digunakan adalah **Random Forest**.
+    Untuk meningkatkan performa model, terutama pada nilai F1-score,
+    dilakukan optimasi hyperparameter menggunakan
+    **Particle Swarm Optimization (PSO)**.
+    Model hasil optimasi inilah yang kemudian digunakan sebagai model terbaik
+    dalam sistem klasifikasi ini.
     """)
 
-    st.markdown("### 🎯 Model Terbaik")
-    st.info("Random Forest + SMOTE + PSO")
+    st.markdown("---")
 
-    st.markdown("### 📊 Evaluasi Model")
+    # =====================================================
+    # CONFUSION MATRIX
+    # =====================================================
+    st.markdown("### 📊 Confusion Matrix (Skenario 3: RF + SMOTE + PSO)")
 
-    col1, col2 = st.columns(2)
+    cm_pso_path = "assets/cm_pso.png"
 
-    with col1:
-        cm_pso = Image.open("assets/cm_pso.png")
-        st.image(cm_pso, caption="Confusion Matrix RF + SMOTE + PSO", use_container_width=True)
+    if os.path.exists(cm_pso_path):
+        cm_pso = Image.open(cm_pso_path)
+        st.image(
+            cm_pso,
+            caption="Confusion Matrix Model RF + SMOTE + PSO",
+            use_container_width=True
+        )
+    else:
+        st.warning("📂 File gambar confusion matrix belum tersedia.")
 
-    with col2:
-        cm_compare = Image.open("assets/cm_compare.png")
-        st.image(cm_compare, caption="Perbandingan Kinerja Model", use_container_width=True)
+    st.markdown("""
+    Berdasarkan hasil *confusion matrix* pada Gambar 4.16,
+    pada **kelas 0 (tidak stunting)** terdapat **220 data** yang berhasil
+    diprediksi dengan benar sebagai kelas 0.
+    Namun, masih terdapat **189 data kelas 0** yang keliru diprediksi
+    sebagai kelas 1. Hal ini menunjukkan bahwa meskipun kemampuan model
+    dalam mengenali kelas 0 sudah cukup baik, masih terdapat sebagian data
+    yang sulit dibedakan dari kelas 1.
+
+    Sementara itu, pada **kelas 1 (stunting)**, model menunjukkan kinerja
+    yang lebih kuat. Sebanyak **1474 data** berhasil diprediksi dengan benar
+    sebagai kelas 1, sedangkan **117 data kelas 1** masih salah diprediksi
+    sebagai kelas 0. Jumlah kesalahan pada kelas ini relatif lebih kecil
+    dibandingkan jumlah prediksi benarnya, yang menandakan bahwa model
+    cukup konsisten dalam mengenali pola kelas 1.
+    """)
 
     st.markdown("---")
-    st.caption("© 2026 — Hana Amirah Natasya | Universitas Negeri Semarang")
+
+    # =====================================================
+    # CLASSIFICATION REPORT
+    # =====================================================
+    st.markdown("### 📈 Classification Report")
+
+    cr_path = "assets/classification_report.png"
+
+    if os.path.exists(cr_path):
+        cr_img = Image.open(cr_path)
+        st.image(
+            cr_img,
+            caption="Classification Report Model RF + SMOTE + PSO",
+            use_container_width=True
+        )
+    else:
+        st.warning("📂 File gambar classification report belum tersedia.")
+
+    st.markdown("""
+    Gambar 4.17 menampilkan *classification report* yang merangkum kinerja
+    model dalam mengklasifikasikan dua kelas, yaitu kelas 0 dan kelas 1,
+    dengan **akurasi sebesar 0.85 atau 85%**.
+
+    Pada **kelas 0**, model memiliki nilai **precision sebesar 0.65**,
+    yang menunjukkan bahwa sebagian besar prediksi kelas 0 cukup tepat,
+    meskipun masih terdapat prediksi yang keliru.
+    Nilai **recall sebesar 0.54** mengindikasikan bahwa model belum sepenuhnya
+    optimal dalam menangkap seluruh data kelas 0 yang sebenarnya.
+    Hal ini tercermin pada **F1-score sebesar 0.59**, yang menggambarkan
+    keseimbangan antara precision dan recall pada kelas ini.
+
+    Sebaliknya, pada **kelas 1**, performa model terlihat lebih kuat.
+    Nilai **precision sebesar 0.89** menunjukkan tingkat ketepatan prediksi
+    yang tinggi, sedangkan **recall sebesar 0.93** menandakan bahwa hampir
+    seluruh data kelas 1 berhasil dikenali dengan baik oleh model.
+    Kombinasi keduanya menghasilkan **F1-score sebesar 0.91**,
+    yang mencerminkan konsistensi model dalam mengklasifikasikan kelas 1.
+    """)
+
+    st.markdown("""
+    <div style="text-align:center; margin-top:30px; color:gray;">
+        <b>Hana Amirah Natasya</b><br>
+        Program Studi Teknik Informatika<br>
+        Fakultas Matematika dan Ilmu Pengetahuan Alam<br>
+        Universitas Negeri Semarang<br>
+        2026
+    </div>
+    """, unsafe_allow_html=True)
