@@ -172,13 +172,13 @@ with tab2:
         st.image(
             cm_pso,
             caption="Confusion Matrix Model RF + SMOTE + PSO",
-            use_container_width=True
+            width=420   # <<< DIKECILKAN
         )
     else:
         st.warning("📂 File gambar confusion matrix belum tersedia.")
 
     st.markdown("""
-    Berdasarkan hasil *confusion matrix* pada,
+    Berdasarkan hasil *confusion matrix* pada Gambar 4.16,
     pada **kelas 0 (tidak stunting)** terdapat **220 data** yang berhasil
     diprediksi dengan benar sebagai kelas 0.
     Namun, masih terdapat **189 data kelas 0** yang keliru diprediksi
@@ -208,13 +208,13 @@ with tab2:
         st.image(
             cr_img,
             caption="Classification Report Model RF + SMOTE + PSO",
-            use_container_width=True
+            width=420   # <<< DIKECILKAN
         )
     else:
         st.warning("📂 File gambar classification report belum tersedia.")
 
     st.markdown("""
-    berikut merupakan hasil kinerja dari
+    Gambar 4.17 menampilkan *classification report* yang merangkum kinerja
     model dalam mengklasifikasikan dua kelas, yaitu kelas 0 dan kelas 1,
     dengan **akurasi sebesar 0.85 atau 85%**.
 
