@@ -70,64 +70,64 @@ with tab1:
 
     if st.button("🔍 Lakukan Klasifikasi", use_container_width=True):
 
-    # 1. Encoding gender
-    gender_encoded = gender_encoder.transform([gender])[0]
+        # 1. Encoding gender
+        gender_encoded = gender_encoder.transform([gender])[0]
 
-    # 2. Input numerik (URUTAN IDENTIK TRAINING)
-    numeric_input = pd.DataFrame([[
-        age,
-        birth_weight,
-        birth_length,
-        body_weight,
-        body_length
-    ]], columns=[
-        "Age",
-        "Birth Weight",
-        "Birth Length",
-        "Body Weight",
-        "Body Length"
-    ])
-
-    # 3. Scaling
-    numeric_scaled = scaler.transform(numeric_input)
-
-    # 4. Final input
-    final_input = pd.DataFrame(
-        np.hstack([[gender_encoded], numeric_scaled[0]]).reshape(1, -1),
-        columns=[
-            "Gender",
+        # 2. Input numerik (URUTAN IDENTIK TRAINING)
+        numeric_input = pd.DataFrame([[
+            age,
+            birth_weight,
+            birth_length,
+            body_weight,
+            body_length
+        ]], columns=[
             "Age",
             "Birth Weight",
             "Birth Length",
             "Body Weight",
             "Body Length"
-        ]
-    )
-
-    # ===============================
-    # 5. PREDIKSI (HARUS DULU)
-    # ===============================
-    prediction = model.predict(final_input)[0]
-    proba = model.predict_proba(final_input)[0]
-
-    # ===============================
-    # 6. TAMPILKAN PROBABILITAS
-    # ===============================
-    st.markdown("### 📈 Probabilitas Kelas")
-    st.write(f"🟢 Tidak Stunting (0): **{proba[0]:.2f}**")
-    st.write(f"🔴 Stunting (1): **{proba[1]:.2f}**")
-
-    st.progress(int(proba[1] * 100))
-
-    # ===============================
-    # 7. INTERPRETASI FINAL
-    # ===============================
-    if prediction == 1:
-        st.error("⚠️ **BERISIKO STUNTING**")
-    else:
-        st.success("✅ **TIDAK BERISIKO STUNTING**")
-
-    st.markdown("---")
+        ])
+    
+        # 3. Scaling
+        numeric_scaled = scaler.transform(numeric_input)
+    
+        # 4. Final input
+        final_input = pd.DataFrame(
+            np.hstack([[gender_encoded], numeric_scaled[0]]).reshape(1, -1),
+            columns=[
+                "Gender",
+                "Age",
+                "Birth Weight",
+                "Birth Length",
+                "Body Weight",
+                "Body Length"
+            ]
+        )
+    
+        # ===============================
+        # 5. PREDIKSI (HARUS DULU)
+        # ===============================
+        prediction = model.predict(final_input)[0]
+        proba = model.predict_proba(final_input)[0]
+    
+        # ===============================
+        # 6. TAMPILKAN PROBABILITAS
+        # ===============================
+        st.markdown("### 📈 Probabilitas Kelas")
+        st.write(f"🟢 Tidak Stunting (0): **{proba[0]:.2f}**")
+        st.write(f"🔴 Stunting (1): **{proba[1]:.2f}**")
+    
+        st.progress(int(proba[1] * 100))
+    
+        # ===============================
+        # 7. INTERPRETASI FINAL
+        # ===============================
+        if prediction == 1:
+            st.error("⚠️ **BERISIKO STUNTING**")
+        else:
+            st.success("✅ **TIDAK BERISIKO STUNTING**")
+    
+        st.markdown("---")
 
 # =====================================================
 # 🧠 TAB 2 — MODEL & INFORMASI
