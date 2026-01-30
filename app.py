@@ -184,8 +184,8 @@ with tab2:
     with col_text:
         st.markdown("""
         Berdasarkan hasil *confusion matrix*, pada **kelas 0 (tidak stunting)**
-        terdapat **220 data** yang berhasil diprediksi dengan benar sebagai kelas 0.
-        Namun, masih terdapat **189 data kelas 0** yang keliru diprediksi sebagai
+        terdapat **223 data** yang berhasil diprediksi dengan benar sebagai kelas 0.
+        Namun, masih terdapat **186 data kelas 0** yang keliru diprediksi sebagai
         kelas 1. Hal ini menunjukkan bahwa meskipun kemampuan model dalam mengenali
         kelas 0 sudah cukup baik, masih terdapat sebagian data yang sulit dibedakan
         dari kelas 1.
@@ -226,12 +226,12 @@ with tab2:
         mengklasifikasikan dua kelas, yaitu kelas 0 dan kelas 1,
         dengan **akurasi sebesar 0.85 atau 85%**.
 
-        Pada **kelas 0**, model memiliki nilai **precision sebesar 0.65**,
+        Pada **kelas 0**, model memiliki nilai **precision sebesar 0.66**,
         yang menunjukkan bahwa sebagian besar prediksi kelas 0 cukup tepat,
         meskipun masih terdapat prediksi yang keliru.
-        Nilai **recall sebesar 0.54** mengindikasikan bahwa model belum sepenuhnya
+        Nilai **recall sebesar 0.55** mengindikasikan bahwa model belum sepenuhnya
         optimal dalam menangkap seluruh data kelas 0 yang sebenarnya.
-        Hal ini tercermin pada **F1-score sebesar 0.59**, yang menggambarkan
+        Hal ini tercermin pada **F1-score sebesar 0.60**, yang menggambarkan
         keseimbangan antara precision dan recall pada kelas ini.
 
         Sebaliknya, pada **kelas 1**, performa model terlihat lebih kuat.
